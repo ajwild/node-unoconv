@@ -34,10 +34,22 @@ You can also start a unoconv listener to avoid launching Libre/OpenOffice on eve
 Converts `file` to the specified `outputFormat`. `options` is an object with the following properties:
 
 * `bin` Path to the unoconv binary
-* `port` Unoconv listener port to connect to
+* `connection` Use a custom connection string
+* `doctype` Specify document type (document, graphics, presentation, spreadsheet)
+* `export` Set export filter options (eg. -e PageRange=1-2)
+* `import` Set import filter options (eg. -i utf8)
+* `no-launch` Fail if no listener is found (default: launch one)
+* `output` Output basename, filename or directory
+* `pipe` Alternative method of connection using a pipe
+* `port` Specify the port (default: 2002) to be used by client or listener
+* `password` Provide a password to decrypt the document
+* `server` Specify the server address (default: 127.0.0.1) to be used by client or listener
+* `stdout` Write output to stdout
+* `template` Import the styles from template (.ott)
+* `timeout` Timeout after secs if connection to listener fails
+* `v`, `vv`, `vvv` Be more and more verbose (use vvv for debugging)
 
 `callback` gets the arguments `err` and `result`. `result` is returned as a Buffer object.
-
 
 ### unoconv.listen([options])
 

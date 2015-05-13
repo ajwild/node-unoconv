@@ -7,6 +7,93 @@ var _ = require('underscore'),
 var unoconv = exports = module.exports = {};
 
 /**
+* Convert options object into args array.
+*
+* @param {Object} options
+* @return {Array} args
+*/
+var getOptions = function (options) {
+    var args = [];
+
+    if (options.connection) {
+        args.push('--connection');
+        args.push(options.connection);
+    }
+
+    if (options.doctype) {
+        args.push('--doctype');
+        args.push(options.doctype);
+    }
+
+    if (options.export) {
+        args.push('--export');
+        args.push(options.export);
+    }
+
+    if (options.import) {
+        args.push('--import');
+        args.push(options.import);
+    }
+
+    if (options.nolaunch) {
+        args.push('--no-launch');
+    }
+
+    if (options.output) {
+        args.push('--output');
+        args.push(options.output);
+    }
+
+    if (options.pipe) {
+        args.push('--pipe');
+        args.push(options.pipe);
+    }
+
+    if (options.port) {
+        args.push('--port');
+        args.push(options.port);
+    }
+
+    if (options.password) {
+        args.push('--password');
+        args.push(options.password);
+    }
+
+    if (options.server) {
+        args.push('--server');
+        args.push(options.server);
+    }
+
+    if (options.stdout) {
+        args.push('--stdout');
+    }
+
+    if (options.template) {
+        args.push('--template');
+        args.push(options.template);
+    }
+
+    if (options.timeout) {
+        args.push('--timeout');
+        args.push(options.timeout);
+    }
+
+    if (options.v) {
+        args.push('-v');
+    }
+
+    if (options.vv) {
+        args.push('-vv');
+    }
+
+    if (options.vvv) {
+        args.push('-vvv');
+    }
+
+    return args;
+};
+
+/**
 * Convert a document.
 *
 * @param {String} file
@@ -29,19 +116,18 @@ unoconv.convert = function(file, outputFormat, options, callback) {
     }
 
     args = [
-        '-f' + outputFormat,
-        '--stdout'
+        '-f' + outputFormat
     ];
 
-    if (options && options.port) {
-        args.push('-p' + options.port)
+    if (options) {
+        args = args.concat(getOptions(options));
+
+        if (options.bin) {
+            bin = options.bin;
+        }
     }
 
     args.push(file);
-
-    if (options && options.bin) {
-        bin = options.bin;
-    }
 
     child = childProcess.spawn(bin, args, function (err, stdout, stderr) {
         if (err) {
@@ -84,14 +170,14 @@ unoconv.listen = function (options) {
         args,
         bin = 'unoconv';
 
-    args = [ '--listener' ];
+    args = ['--listener'];
 
-    if (options && options.port) {
-        args.push('-p' + options.port);
-    }
+    if (options) {
+        args = args.concat(getOptions(options));
 
-    if (options && options.bin) {
-        bin = options.bin;
+        if (options.bin) {
+            bin = options.bin;
+        }
     }
 
     return childProcess.spawn(bin, args);
@@ -105,6 +191,7 @@ unoconv.listen = function (options) {
 */
 unoconv.detectSupportedFormats = function (options, callback) {
     var self = this,
+        args,
         docType,
         detectedFormats = {
             document: [],
@@ -119,11 +206,13 @@ unoconv.detectSupportedFormats = function (options, callback) {
         options = null;
     }
 
+    args = ['--show'];
+
     if (options && options.bin) {
         bin = options.bin;
     }
 
-    childProcess.execFile(bin, [ '--show' ], function (err, stdout, stderr) {
+    childProcess.execFile(bin, args, function (err, stdout, stderr) {
         if (err) {
             return callback(err);
         }
