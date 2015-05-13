@@ -51,6 +51,8 @@ Converts `file` to the specified `outputFormat`. `options` is an object with the
 
 `callback` gets the arguments `err` and `result`. `result` is returned as a Buffer object.
 
+Returns a `ChildProcess` object.
+
 ### unoconv.listen([options])
 
 Starts a new unoconv listener. `options` accepts the same parameters as `convert()`.

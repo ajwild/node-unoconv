@@ -148,6 +148,8 @@ unoconv.convert = function(file, outputFormat, options, callback) {
 
         callback(null, Buffer.concat(stdout));
     });
+
+    return child;
 };
 
 /**
